@@ -1,12 +1,14 @@
-<project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.sunbird</groupId>
     <artifactId>certificate-generator-service</artifactId>
     <version>1.2.0</version>
     <packaging>pom</packaging>
     <name>certificate-generator-service</name>
+
     <properties>
         <project.version>1.2.0</project.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,9 +32,9 @@
         <jacoco.version>0.8.8</jacoco.version>
         <httpClient.version>4.5.14</httpClient.version>
         <jacoco.maven.plugin.version>0.8.8</jacoco.maven.plugin.version>
+
         <sonar.java.binaries>${project.basedir}/target/classes</sonar.java.binaries>
         <sonar.scala.scoverage.reportPath>target/scoverage.xml</sonar.scala.scoverage.reportPath>
-        <sonar.scala.coverage.reportPath>${project.basedir}/target/scoverage.xml</sonar.scala.coverage.reportPath>
     </properties>
 
     <modules>
@@ -47,12 +49,42 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!-- Sonar plugin -->
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
                     <version>4.0.0.4121</version>
                 </plugin>
+
+                <!-- JaCoCo plugin for multi-module aggregate -->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.maven.plugin.version}</version>
+                    <executions>
+                        <!-- Attach JaCoCo agent to all child modules -->
+                        <execution>
+                            <id>prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+
+                        <!-- Aggregate report runs in verify phase -->
+                        <execution>
+                            <id>report-aggregate</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>report-aggregate</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/jacoco-aggregate</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
+
 </project>
